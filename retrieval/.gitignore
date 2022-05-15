@@ -1,3 +1,4 @@
+crawling_daumnews.py
 *.exe
 *.csv
 .DS_Store
