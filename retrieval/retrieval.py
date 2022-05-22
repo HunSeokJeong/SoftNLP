@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import ast
 
 def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 	query_tfidf = vectorizer.transform([query])
@@ -11,7 +12,14 @@ def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 
 input_file="다음뉴스_20220501_20220509_토큰화.csv"
 df = pd.read_csv(input_file, header = 0)
-documents=df['본문'].values.astype('U')
+documents=[]
+for val in df['토큰'].values:
+	tokens=ast.literal_eval(val)
+	if not tokens:
+		continue
+	documents.append(" ".join(tokens))
+#documents=np.array(documents,dtype=object)
+#documents=documents.astype('U')
 
 #vectorizer = TfidfVectorizer(preprocessor=nlp.clean_tf_idf_text)
 vectorizer = TfidfVectorizer()
