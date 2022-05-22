@@ -9,7 +9,7 @@ def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 	return cosineSimilarities
 
 
-input_file="다음뉴스_20220501_20220509_크롤링.csv"
+input_file="다음뉴스_20220501_20220509_토큰화.csv"
 df = pd.read_csv(input_file, header = 0)
 documents=df['본문'].values.astype('U')
 
