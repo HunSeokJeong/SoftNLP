@@ -11,7 +11,7 @@ def read_article(filedata):
     for sentence in article:
         print(sentence)
         sentences.append(sentence.replace("[^ㄱ-ㅎ|가-힣]", " ").split(" "))
-    sentences.pop() 
+    
     
     return sentences
 
