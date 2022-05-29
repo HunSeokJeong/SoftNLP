@@ -9,8 +9,7 @@ def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 	query_tfidf = vectorizer.transform([query])
 	cosineSimilarities = cosine_similarity(query_tfidf, docs_tfidf).flatten()
 	return cosineSimilarities
-
-
+ 
 input_file="retrieval/다음뉴스_20220501_20220509_토큰화.csv"
 df = pd.read_csv(input_file, header = 0)
 documents=[]
