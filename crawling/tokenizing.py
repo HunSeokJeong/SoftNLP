@@ -85,23 +85,23 @@ class Tokenizer:
 
 
 
-if __name__ == "__main__":
-    # 다음 뉴스 읽어오기
-    data = pd.read_csv('')
-    data = data.dropna(subset=['본문'])
-    tqdm.pandas()
+# if __name__ == "__main__":
+#     # 다음 뉴스 읽어오기
+#     data = pd.read_csv('')
+#     data = data.dropna(subset=['본문'])
+#     tqdm.pandas()
     
     
-    # 본문 토큰화
-    tokenizer = Tokenizer()
-    data['제목토큰'] = data['제목']
-    data['제목토큰'] = data['제목토큰'].progress_apply(tokenizer.refine_text)
-    data['제목토큰'] = data['제목토큰'].progress_apply(tokenizer.get_clean_token)
+#     # 본문 토큰화
+#     tokenizer = Tokenizer()
+#     data['제목토큰'] = data['제목']
+#     data['제목토큰'] = data['제목토큰'].progress_apply(tokenizer.refine_text)
+#     data['제목토큰'] = data['제목토큰'].progress_apply(tokenizer.get_clean_token)
     
-    data['본문토큰'] = data['본문']
-    data['본문토큰'] = data['본문토큰'].progress_apply(tokenizer.refine_text)
-    data['본문토큰'] = data['본문토큰'].progress_apply(tokenizer.get_clean_token)
+#     data['본문토큰'] = data['본문']
+#     data['본문토큰'] = data['본문토큰'].progress_apply(tokenizer.refine_text)
+#     data['본문토큰'] = data['본문토큰'].progress_apply(tokenizer.get_clean_token)
     
     
-    # 토큰화 후 저장
-    data.to_csv('./다음뉴스/다음뉴스_20220501_20220523_토큰화.csv', encoding='utf-8-sig', index=False)
+#     # 토큰화 후 저장
+#     data.to_csv('./다음뉴스/다음뉴스_20220501_20220523_토큰화.csv', encoding='utf-8-sig', index=False)

@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*- 
 
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication,QSizePolicy
 from PyQt5 import uic
 import sys
 import os
@@ -18,10 +18,11 @@ class WindowClass(QMainWindow,form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setWindowTitle("Drag and Drop")
-        self.resize(720, 480)
+        self.setWindowTitle("뉴스검색기")
         self.setAcceptDrops(True)
-
+        self.lbl.setWordWrap(True)    
+        self.lbl.setOpenExternalLinks(True)
+        self.lbl.setTextFormat(1)
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
@@ -37,20 +38,22 @@ class WindowClass(QMainWindow,form_class):
     def img_read(self,imPath):
         text=ocr.ocr_read(imPath)
         self.textEdit.setPlainText(text)
-        self.lbl.setPlainText(self.search(text))
+        self.lbl.setText(self.search(text))
         
     def button_clicked(self):
         text=self.textEdit.toPlainText()
         self.set_textbox(text)
         
     def set_textbox(self,text):
-        self.lbl.setPlainText(self.search(text))
+        self.lbl.setText(self.search(text))
         
     def search(self,text):
         output=""
         
         for newsFeed in retrieval_f.retrieval(text,int(self.cbx_src.currentText())):
-        	output+="\n\n"+summalize_f.generate_summary(newsFeed, int(self.cbx_sum.currentText()))
+        	output+="<br><br>"+summalize_f.generate_summary(newsFeed[1], int(self.cbx_sum.currentText()))+"<br>"+\
+                '<a href="'+newsFeed[0]+'">링크</a>'
+                
             
         return output
     
