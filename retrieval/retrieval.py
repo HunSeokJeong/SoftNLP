@@ -43,7 +43,8 @@ def retrieval(rank=5):
 	
 	ranked=[]
 	for sim,i in cos_sim_item[:rank]:
-		#print(sim)
+		print(df.iloc[i,0])
+		print(df.iloc[i,1])
 		ranked.append(df.iloc[i,2])
 	return ranked
 
