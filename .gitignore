@@ -1,0 +1,7 @@
+
+retrieval/__pycache__/retrieval.cpython-39.pyc
+retrieval/__pycache__/retrieval_f.cpython-39.pyc
+retrieval/__pycache__/retrieval.cpython-310.pyc
+summalize/__pycache__/ocr.cpython-39.pyc
+summalize/__pycache__/summalize_f.cpython-39.pyc
+*.pyc
