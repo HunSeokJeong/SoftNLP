@@ -10,6 +10,7 @@ import cv2
 #pip install tensorflow 2.5.3(python 3.10이면 버전 낮춰야 함)
 from pykospacing import Spacing
 
+from hanspell import spell_checker
 import os 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'#텐서플로우 오류 제거용
 
@@ -56,6 +57,7 @@ def ocr_read(imPath):
     spacing = Spacing()
     no_space_string=string.replace(" ","").replace("\n","")
     newstring = spacing(no_space_string) 
-    return newstring
+    result = spell_checker.check(newstring).checked
+    return result
 
 #참고한 사이트 https://ddolcat.tistory.com/954

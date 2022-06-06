@@ -13,7 +13,7 @@ from crawling import tokenizing
 def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
     #토큰화+용언분석 적용 //파일경로 문제 있음.
     query_token=tokenizing.Tokenizer().get_clean_token(tokenizing.Tokenizer().refine_text(query))
-    
+    print("query : ",query_token)
     query_tfidf = vectorizer.transform([" ".join(query_token)])
     cosineSimilarities = cosine_similarity(query_tfidf, docs_tfidf).flatten()
     return cosineSimilarities
@@ -48,6 +48,7 @@ def retrieval(query,rank=5):
 	
 	ranked=[]
 	for sim,i in cos_sim_item[:rank]:
+		print(sim)
 		ranked.append([df.iloc[i,1],df.iloc[i,2]])
 	return ranked
 
