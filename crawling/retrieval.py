@@ -4,16 +4,17 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
-from tokenizing import Tokenizer
-tokenizer = Tokenizer()
+from crawling import tokenizing
+tokenizer = tokenizing.Tokenizer()
 vectorizer = TfidfVectorizer()
 
 
 
 def get_tf_idf_query_similarity(docs_tfidf, query):
     # 쿼리 토큰화
-    query_token = tokenizer.get_clean_token(query)
-    query_token = tokenizer.refine_text(query_token)
+    #query_token = tokenizer.get_clean_token(query)
+    #query_token = tokenizer.refine_text(query_token)
+    query_token=tokenizing.Tokenizer().get_clean_token(tokenizing.Tokenizer().refine_text(query))
    
     # 쿼리와 뉴스의 코사인 유사도 반환
     query_tfidf = vectorizer.transform([' '.join(query_token)])
@@ -36,27 +37,27 @@ def retrieval(query, rank=5):
     remove = []
     for i in range(rank*10):
         if i in remove: continue
-        idx = ranked[i][3]
-        current_news = docs_tfidf[i].toarray()
+        idx_a = ranked[i][2]
+        current_news = docs_tfidf[idx_a].toarray()
         
         for j in range(i+1, rank*10, 1):
             if j in remove: continue
-            idx = ranked[j][3]
-            next_news = docs_tfidf[j].toarray()
+            idx_b = ranked[j][2]
+            next_news = docs_tfidf[idx_b].toarray()
             
             cos_sim = float(cosine_similarity(current_news, next_news))
-            if cos_sim >= 0.95 and j not in remove:     
+            if cos_sim >= 0.85 and j not in remove:     
                 remove.append(j)
-                
-    for i in range(len(remove)):
-        idx = remove[len(remove)-1-i]
+            
+    for _ in range(len(remove)):
+        idx = remove.pop()
         ranked.pop(idx)
-    return ranked
+    return ranked[:rank]
 
 
 
 # 다음 뉴스 읽어오기
-input_file = ''
+input_file = 'retrieval/다음뉴스_20220501_20220523_토큰화.csv'
 df = pd.read_csv(input_file, header=0)
 
 # 토큰 없는 뉴스들 제거
