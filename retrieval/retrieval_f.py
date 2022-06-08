@@ -40,7 +40,7 @@ def retrieval(query,rank=5):
 	return ranked
 
 
-input_file="다음뉴스_20220501_20220509_토큰화.csv"
+input_file="다음뉴스_202205_토큰화.csv"
 df = pd.read_csv(input_file, header = 0)
 
 ##토큰이 없는 기사 (아마도 불용어 제거시 모두 제거되거나 본문자체가 없는 기사인듯..?) 제거	
@@ -48,7 +48,7 @@ documents=[]	#벡터화할 기사 (토큰들을 띄워쓰기 기준으로 합친
 remove=[]	#제거할 기사 번호 임시로 담아둠
 
 #print('len df bef chk:',len(df))
-for i,val in enumerate(df['토큰'].values):
+for i,val in enumerate(df['본문토큰'].values):
 	tokens=ast.literal_eval(val)
 	if not tokens:
 		remove.append(i)
