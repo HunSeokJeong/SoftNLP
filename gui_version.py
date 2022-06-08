@@ -1,6 +1,16 @@
 #-*- coding: utf-8 -*- 
 
+
+# pyqt5 설치해야함
+# pip uninstall PyGLM PySide2 pyopengl
+# pip install PyGLM PySide2 pyopengl
+# pip install pyqt5
+# pip install pyqt5-tools
+
+
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QMainWindow, QApplication,QSizePolicy
+from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import sys
 import os
@@ -8,21 +18,20 @@ from retrieval import retrieval_f
 from summalize import summalize_f
 from summalize import ocr
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'#텐서플로우 오류 제거용
-form_class= uic.loadUiType("./myqt01.ui")[0]
 sum_size=1
-# #import os 
-# #os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'#텐서플로우 오류 제거용
 
-class WindowClass(QMainWindow,form_class):
+class Form(QWidget):
     
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
+        # self.setupUi(self)
+        self.ui=uic.loadUi("./myqt01.ui",self)
         self.setWindowTitle("뉴스검색기")
         self.setAcceptDrops(True)
-        self.lbl.setWordWrap(True)    
-        self.lbl.setOpenExternalLinks(True)
-        self.lbl.setTextFormat(1)
+        self.output.setWordWrap(True)    
+        self.output.setOpenExternalLinks(True)
+        self.output.setTextFormat(1)
+        self.ui.show()
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
@@ -34,24 +43,25 @@ class WindowClass(QMainWindow,form_class):
         for f in files:
             print(f)
             self.img_read(str(f))
-    
+    #ocr 읽는 부분
     def img_read(self,imPath):
         text=ocr.ocr_read(imPath)
-        self.textEdit.setPlainText(text)
-        self.lbl.setText(self.search(text))
+        self.input_text.setPlainText(text)
+        self.output.setText(self.search(text))
         
+	#버튼 클릭시 읽어서 textbox(출 수정)
     def button_clicked(self):
-        text=self.textEdit.toPlainText()
+        text=self.input_text.toPlainText()
         self.set_textbox(text)
         
     def set_textbox(self,text):
-        self.lbl.setText(self.search(text))
+        self.output.setText(self.search(text))
         
     def search(self,text):
         output=""
         
-        for newsFeed in retrieval_f.retrieval(text,int(self.cbx_src.currentText())):
-        	output+="<br><br>"+summalize_f.generate_summary(newsFeed[1], int(self.cbx_sum.currentText()))+"<br>"+\
+        for newsFeed in retrieval_f.retrieval(text,int(self.src_num.currentText())):
+        	output+="<br><br>"+summalize_f.generate_summary(newsFeed[1], int(self.sum_num.currentText()))+"<br>"+\
                 '<a href="'+newsFeed[0]+'">링크</a>'
                 
             
@@ -60,6 +70,6 @@ class WindowClass(QMainWindow,form_class):
 if __name__ == '__main__':
     
     app = QApplication(sys.argv)
-    ui = WindowClass()
-    ui.show()
+    form=Form()
+    form.show()
     sys.exit(app.exec_())

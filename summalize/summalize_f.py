@@ -7,6 +7,8 @@ import math
 import sys,os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from crawling import tokenizing
+import pandas as pd
+
 
 def get_token(text):
     return tokenizing.Tokenizer().get_clean_token(tokenizing.Tokenizer().refine_text(text))
