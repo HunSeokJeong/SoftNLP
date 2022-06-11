@@ -16,7 +16,7 @@ def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 	#쿼리 tf-idf vector
     #토큰화+용언분석 적용 //파일경로 문제 있음.
     query_token=tokenizing.Tokenizer().get_clean_token(tokenizing.Tokenizer().refine_text(query))
-    print("query : ",query_token)
+    #print("query : ",query_token)
     query_tfidf = vectorizer.transform([" ".join(query_token)])
     cosineSimilarities = cosine_similarity(query_tfidf, docs_tfidf).flatten()
 	#쿼리 벡터와 기사 벡터 사이 코사인 유사도
@@ -25,7 +25,7 @@ def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 
 ##run.py에서 호출하는 검색 함수, 검색결과 상위 기사의 본문 반환
 def retrieval(query,rank=5):
-	print('ready...')
+	#print('ready...')
 	query=query.rstrip()
 	cos_sim=get_tf_idf_query_similarity(vectorizer,docs_tfidf,query)
 	
@@ -33,14 +33,39 @@ def retrieval(query,rank=5):
 	cos_sim_item=sorted([(sim,i) for i,sim in enumerate(cos_sim)],reverse=True)
 	
 	ranked=[]
-	for sim,i in cos_sim_item[:rank]:
-		print(sim)
-		#리턴값 [기사 링크, 기사 대본]
-		ranked.append([df.iloc[i,1],df.iloc[i,2]])
-	return ranked
+	for sim,i in cos_sim_item[:rank*10]:
+		ranked.append([df.iloc[i,1], df.iloc[i,2], i])#주소,본문,인덱스
+		
+	# 검색된 뉴스 중, 내용 유사한 뉴스들 제거
+	remove = []
+	for i in range(rank*10):
+		if i in remove: continue
+		idx_a = ranked[i][2]
+		current_news = docs_tfidf[idx_a].toarray()
+		
+		for j in range(i+1, rank*10, 1):
+			if j in remove: continue
+			idx_b = ranked[j][2]
+			next_news = docs_tfidf[idx_b].toarray()
+			
+			cos_sim = float(cosine_similarity(current_news, next_news))
+			if cos_sim >= 0.85 and j not in remove:     
+				remove.append(j)
+	
+	remove.sort()
+	for _ in range(len(remove)):
+		idx = remove.pop()
+		ranked.pop(idx)
+	return ranked[:rank]
+	
+	#for sim,i in cos_sim_item[:rank]:
+	#	print(sim)
+	#	#리턴값 [기사 링크, 기사 대본]
+	#	ranked.append([df.iloc[i,1],df.iloc[i,2]])
+	#return ranked
 
 
-input_file="다음뉴스_202205_토큰화.csv"
+input_file="retrieval/tokenedNews.csv"
 df = pd.read_csv(input_file, header = 0)
 
 ##토큰이 없는 기사 (아마도 불용어 제거시 모두 제거되거나 본문자체가 없는 기사인듯..?) 제거	

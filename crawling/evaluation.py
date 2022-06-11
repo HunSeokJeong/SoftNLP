@@ -1,8 +1,52 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[153]:
+
+
 import re
 import time
 from selenium import webdriver
 
 
+# In[154]:
+# 뉴스사별 css selector 지정
+company_css_dict = {'동아일보': '#content > div > div.article_txt',
+                    '한국일보': 'body > div.wrap > div.container.end.end-uni > div.end-body > div > div.col-main.read',
+                    '서울경제': '#v-left-scroll-in > div.article_con > div.con_left > div.article_view',
+                    '연합뉴스': '#articleWrap > div.content01.scroll-article-zone01 > div > div > article',
+                    '서울신문': '#atic_txt1',
+                    '기독교연합신문': '#article-view-content-div',
+                    '주간동아': '#text',
+                    'YES24 채널예스': '#articleCont > div.viewType04 > div',
+                    'MBC': '#content > div > section.wrap_article > article > div.news_cont', 
+                    '뉴시스': '#content > div.articleView > div.view > div.viewer > article',
+                    '웹이코노미': '#container > div > div.column.sublay > div:nth-child(1) > div > div.arv_009 > div',
+                    '경인매일': '#article-view-content-div',
+                    '브레이크뉴스': '#contents_wrap_sub2 > div > div',
+                    '기호일보': '#article-view-content-div',
+                    '국제신문': '#news_textArea > div.news_article',
+                    '스포츠경향': '#articleBody',
+                    'KBS': '#harmonyContainer > section',
+                    '오마이뉴스': '#content_wrap > div.content > div.newswrap > div.news_body > div.news_view > div.article_view > div',
+                    '에이블뉴스': '#NewsContent',
+                    '세계일보': '#article_txt > article',
+                    '헤럴드경제': '#articleText',
+                    '경향신문': '#articleBody',
+                    '조선에듀': '#e_article > div.newsCnt',
+                    '여성신문': '#article-view-content-div',
+                    'ize': '#article-view-content-div',
+                    '한국경제': '#articletxt',
+                    'TV리포트': '#CmAdContent', 
+                    '스타뉴스': '#textBody',
+                    'SR타임스': '#articleBody',
+                    '머니투데이': '#textBody',
+                    '경북신문': '#contents > section:nth-child(3) > div > div.hm_col.hm_col2_21.col_left > div.view_body > div > div.view_article.clearfix',
+                    '중앙일보': '#article_body',
+                    '노컷뉴스': '#pnlContent',
+                    '프레시안': '#articleBody',
+                    '뉴스1': '#article_body_content',
+                    '더팩트': '#content_area'}
 
 class Searcher:
     def __init__(self, query, n):
@@ -35,74 +79,76 @@ class Searcher:
         searched_content = []
 
         # 검색 결과 뉴스 주소, 뉴스사 크롤링
-        for i in range(1, n+1, 1):
+
+        print("실시간 뉴스 제목, 링크 크롤링")
+        cnt=0
+        i=1
+        while cnt<n and i<=10:
             try:
                 news  = driver.find_element_by_css_selector(f'#newsColl > div.cont_divider > ul > li:nth-child({i}) > div.wrap_cont > a')
                 company = driver.find_element_by_css_selector(f'#newsColl > div.cont_divider > ul > li:nth-child({i}) > div.wrap_cont > span.cont_info > span:nth-child(1)')
 
+                if company.text not in company_css_dict:
+                    print(f'error company: {company.text}')
+                    continue
+                print(f'{cnt}: {news.get_attribute("href")}, {company.text}')
+
+                ####
+                #link=news.get_attribute('href')
+                #driver.get(link)
+                #time.sleep(0.5)
+                #
+                #cur_content=''
+                #contents = driver.find_elements_by_css_selector(company_css_dict[company.text])
+                #print('content\n',len (contents))
+
+                ####
                 searched_title.append(news.text)
                 searched_link.append(news.get_attribute('href'))
                 searched_company.append(company.text)
-            except:
-                break
+                cnt+=1
+            except Exception as e:
+                print(e)
+            finally:
+                i+=1
+        print('검색 결과가 없습니다.' if not searched_title else f'crawl done: {len(searched_title)}')
 
-        # 검색 결과가 없을 경우
-        if len(searched_title) == 0: print('검색 결과가 없습니다.')
-
-        # 뉴스사별 css selector 지정
-        company_css_dict = {'동아일보': '#content > div > div.article_txt',
-                            '한국일보': 'body > div.wrap > div.container.end.end-uni > div.end-body > div > div.col-main.read',
-                            '서울경제': '#v-left-scroll-in > div.article_con > div.con_left > div.article_view',
-                            '연합뉴스': '#articleWrap > div.content01.scroll-article-zone01 > div > div > article',
-                            '서울신문': '#atic_txt1',
-                            '기독교연합신문': '#article-view-content-div',
-                            '주간동아': '#text',
-                            'YES24 채널예스': '#articleCont > div.viewType04 > div',
-                            'MBC': '#content > div > section.wrap_article > article > div.news_cont', 
-                            '뉴시스': '#content > div.articleView > div.view > div.viewer > article',
-                            '웹이코노미': '#container > div > div.column.sublay > div:nth-child(1) > div > div.arv_009 > div',
-                            '경인매일': '#article-view-content-div',
-                            '브레이크뉴스': '#contents_wrap_sub2 > div > div',
-                            '기호일보': '#article-view-content-div',
-                            '국제신문': '#news_textArea > div.news_article',
-                            '스포츠경향': '#articleBody',
-                            'KBS': '#harmonyContainer > section',
-                            '오마이뉴스': '#content_wrap > div.content > div.newswrap > div.news_body > div.news_view > div.article_view > div',
-                            '에이블뉴스': '#NewsContent',
-                            '세계일보': '#article_txt > article',
-                            '헤럴드경제': '#articleText',
-                            '경향신문': '#articleBody',
-                            '조선에듀': '#e_article > div.newsCnt',
-                            '여성신문': '#article-view-content-div',
-                            'ize': '#article-view-content-div',
-                            '한국경제': '#articletxt',
-                            'TV리포트': '#CmAdContent', 
-                            '스타뉴스': '#textBody',
-                            'SR타임스': '#articleBody',
-                            '머니투데이': '#textBody',
-                            '경북신문': '#contents > section:nth-child(3) > div > div.hm_col.hm_col2_21.col_left > div.view_body > div > div.view_article.clearfix',
-                            '중앙일보': '#article_body',
-                            '노컷뉴스': '#pnlContent',
-                            '프레시안': '#articleBody',
-                            '뉴스1': '#article_body_content'}
+        print('\n\n\n\n')        
         searched_company = [company_css_dict[searched_company[i]] for i in range(len(searched_company))]
 
         # 뉴스별 본문 크롤링
+        print('본문 크롤링')
+        remove=[]
         for i in range(len(searched_link)):
-            link = searched_link[i]
-            driver.get(link)
-            time.sleep(0.5)
-            print(i)        
+            try:
+                print(f'{i}: {searched_link[i]}')        
+                link = searched_link[i]
+                driver.get(link)
+                time.sleep(0.5)
 
-            cur_content = ''
-            contents = driver.find_elements_by_css_selector(searched_company[i])
-            for content in contents:
-                cur_content += content.text
-            cur_content = self.preprocess_content(cur_content)
-            searched_content.append(cur_content)
+                cur_content = ''
+                contents = driver.find_elements_by_css_selector(searched_company[i])
+                for content in contents:
+                    cur_content += content.text
+                if not cur_content:
+                    remove.append(i)
+                    print("empty content")
+                    continue
+                cur_content = self.preprocess_content(cur_content)
+                searched_content.append(cur_content)
+            except Exception as e:
+                remove.append(i)
+                #searched_content.append('뉴스사 정보 없음')
+                print(e)
 
         driver.quit()    
         print(time.time()-start)
+        while remove:
+            remidx=remove.pop()
+            searched_title.pop(remidx)
+            searched_link.pop(remidx)
+        searched_title=searched_title[:min(n,len(searched_title))]
+        searched_link=searched_title[:min(n,len(searched_link))]
         return searched_title, searched_link, searched_content
 
 
@@ -152,3 +198,4 @@ class Searcher:
             text = re.sub(f'{stoptext}[\d\s\w.,!?]+', '', text)
 
         return text.strip()
+
