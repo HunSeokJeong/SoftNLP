@@ -1,15 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[153]:
-
-
 import re
 import time
 from selenium import webdriver
 
 
-# In[154]:
+
 # 뉴스사별 css selector 지정
 company_css_dict = {'동아일보': '#content > div > div.article_txt',
                     '한국일보': 'body > div.wrap > div.container.end.end-uni > div.end-body > div > div.col-main.read',
@@ -89,9 +83,9 @@ class Searcher:
                 company = driver.find_element_by_css_selector(f'#newsColl > div.cont_divider > ul > li:nth-child({i}) > div.wrap_cont > span.cont_info > span:nth-child(1)')
 
                 if company.text not in company_css_dict:
-                    print(f'error company: {company.text}')
+                    #print(f'error company: {company.text}')
                     continue
-                print(f'{cnt}: {news.get_attribute("href")}, {company.text}')
+                #print(f'{cnt}: {news.get_attribute("href")}, {company.text}')
 
                 ####
                 #link=news.get_attribute('href')
@@ -108,10 +102,11 @@ class Searcher:
                 searched_company.append(company.text)
                 cnt+=1
             except Exception as e:
-                print(e)
+                pass
+                #print(e)
             finally:
                 i+=1
-        print('검색 결과가 없습니다.' if not searched_title else f'crawl done: {len(searched_title)}')
+        print('[Tabloid Discriminator] Evaluation을 위한 검색 결과가 없습니다.' if not searched_title else f'crawl done: {len(searched_title)}')
 
         print('\n\n\n\n')        
         searched_company = [company_css_dict[searched_company[i]] for i in range(len(searched_company))]
@@ -132,17 +127,17 @@ class Searcher:
                     cur_content += content.text
                 if not cur_content:
                     remove.append(i)
-                    print("empty content")
+                    #print("empty content")
                     continue
                 cur_content = self.preprocess_content(cur_content)
                 searched_content.append(cur_content)
             except Exception as e:
                 remove.append(i)
                 #searched_content.append('뉴스사 정보 없음')
-                print(e)
+                #print(e)
 
         driver.quit()    
-        print(time.time()-start)
+        print(f'[Tabloid Discriminator] Evaluation을 위한 크롤링 수행 시간: {time.time()-start}')
         while remove:
             remidx=remove.pop()
             searched_title.pop(remidx)
