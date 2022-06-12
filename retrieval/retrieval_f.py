@@ -26,7 +26,6 @@ def get_tf_idf_query_similarity(vectorizer,docs_tfidf,query):
 ##run.py에서 호출하는 검색 함수, 검색결과 상위 기사의 본문 반환
 def retrieval(query,rank=5):
 	#print('ready...')
-	print(f'\n[Tabloid Discriminator] "{query}" 검색을 준비합니다...')
 	query=query.rstrip()
 	cos_sim=get_tf_idf_query_similarity(vectorizer,docs_tfidf,query)
 	
@@ -57,11 +56,6 @@ def retrieval(query,rank=5):
 	for _ in range(len(remove)):
 		idx = remove.pop()
 		ranked.pop(idx)
-	
-	# 상위 뉴스 유사도 출력
-        for i in range(len(ranked)):
-		sim = ranked[i][3]
-		print(f'[Tabloid Discriminator] 쿼리-검색된 뉴스와의 유사도: {sim}')
 	return ranked[:rank]
 	
 	#for sim,i in cos_sim_item[:rank]:
