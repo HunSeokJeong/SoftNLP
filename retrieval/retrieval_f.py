@@ -65,7 +65,7 @@ def retrieval(query,rank=5):
 	#return ranked
 
 
-input_file="retrieval/tokenedNews.csv"
+input_file="다음뉴스_202205_토큰화.csv"
 df = pd.read_csv(input_file, header = 0)
 
 ##토큰이 없는 기사 (아마도 불용어 제거시 모두 제거되거나 본문자체가 없는 기사인듯..?) 제거	

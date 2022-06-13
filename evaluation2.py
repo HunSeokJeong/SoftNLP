@@ -28,7 +28,8 @@ def evaluate(query):
 	print('\n\n\n\n')
 	
 	
-	print("crawling for eval start")
+
+	print('\n[Tabloid Discriminator] Evaluation을 위한 크롤링을 시작합니다...')
 	searcher=evaluation.Searcher(query,10)
 	answer=[False]*n
 	for title,link,content in zip(searcher.searched_title,searcher.searched_link,searcher.searched_content):

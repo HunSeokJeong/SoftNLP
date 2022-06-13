@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import sys
 import os
-import run
+import evaluation2
 from retrieval import retrieval_f
 from summalize import summalize_f
 from summalize import ocr
@@ -66,7 +66,7 @@ class Form(QWidget):
         text=self.query_input.toPlainText()
         self.web_data.setText('검색중')
         self.our_data.setText('검색중')
-        our,crawl,ans,avg=run.evaluate(text)		
+        our,crawl,ans,avg=evaluation2.evaluate(text)		
         text1=""
         for link,context,index in our:
         	text1+="<br><br>"+summalize_f.generate_summary(context, 1)+"<br>"+\

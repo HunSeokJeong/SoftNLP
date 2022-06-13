@@ -100,6 +100,7 @@ class Searcher:
                 searched_title.append(news.text)
                 searched_link.append(news.get_attribute('href'))
                 searched_company.append(company.text)
+                print(f'> {news.text} | {company.text}, 추가됨.')
                 cnt+=1
             except Exception as e:
                 pass
@@ -131,7 +132,7 @@ class Searcher:
                     continue
                 cur_content = self.preprocess_content(cur_content)
                 searched_content.append(cur_content)
-            except Exception as e:
+            except:
                 remove.append(i)
                 #searched_content.append('뉴스사 정보 없음')
                 #print(e)
